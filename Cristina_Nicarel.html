@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/57cb54b1fc.js" crossorigin="anonymous"></script>
+    <title>Juego del Ahorcado</title>
+    <style>
+        *{
+          margin:0;
+          padding:0;
+          box-sizing: border-box;   
+        } 
+        .contenedor{
+            width:80%;
+            margin:20px auto;
+            /* background-color: azure; */
+             background-image: url(https://abctech.news/wp-content/uploads/2022/05/5-Letter-Words-Ending-In-ing-wordle-gvBRMiR-2.jpg); 
+            background-size:cover;
+            background-repeat: no-repeat; 
+            position: relative;
+        }
+        /*--------APARTADOS DEL CONTENEDOR------------*/
+        .bienvenidos,.juego{
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap:30px;
+            margin:60px auto; 
+            /* border: 2px solid rgb(111, 236, 236); */
+            border-radius: 15px;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: white;
+            padding:50px 100px;
+        }
+        .bienvenidos :last-child{
+                align-self: center;
+        }
+        h1{
+            letter-spacing: 8px;
+            color: #df8888;
+            font-size: 4rem;
+        }
+        #nombreJugador, #intro_texto{
+            height: 20px;
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            background-color: antiquewhite; 
+        }
+        #intro_intentos{
+            width:200px;
+        }
+        #nombreJugador{
+            width: 250px;
+        }
+        #intro_texto{
+            width: 250px; 
+             
+        }
+        .btn_bienvenido,.btn_busca{
+            padding: 8px;
+            width:200px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+       /*  .inicio{
+            padding: 8px 16px;
+        } */
+       
+      .salida{
+        padding-left: 20px;
+        margin-top: 30px;
+      } 
+      /*span con cada --- */
+     .letras{
+        font-weight: 600px;
+        font-size: 1.2rem;
+        letter-spacing:10px;
+     }  
+
+      .juego{
+        display:none;  
+     } 
+
+     .letra{
+        display:none;
+        font-size: 1.5rem;
+        text-align: center;
+        margin-top: 15px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+     }
+     .btn_busca{
+        display: none;
+     }
+     .palabraOculta{
+        display: flex;
+        flex-wrap: wrap;
+     }
+     .salida span {
+        font-size: 4rem;
+        border: 3px solid;
+        padding: 0.5rem 1rem;
+        margin: 1rem;
+        color: rgb(14, 14, 14);
+        background-color: rgb(220, 235, 83); 
+        border-radius: .5rem;
+     }
+    .listaerror{
+        color: black;
+        display:none;
+        justify-content: space-between;
+        align-items: center;
+        /* padding: 30px 20px; */
+        font-style: italic;
+        font-weight: 600;
+        font-size: 1.5rem;
+        margin:75px  auto; 
+        border: 1px solid black;
+        background-color: yellow;
+}
+    .lista_errores{
+        display: none;
+    }
+    .erata{
+        text-align: center;
+    }
+    .intentos{
+        text-align: center;
+
+    }
+    
+    /* .intentos {
+        font-size: 5rem;
+        color: red;
+        background-color: white;
+        padding: 0 1rem;
+        border-radius: 1rem;
+        margin: 5px 44%;
+        display:none;
+        text-align: center; 
+       
+    } */
+   
+    #letrabuscar{
+        /* padding-left: 10px; */
+        font-weight: 600;
+        font-size: 1.4rem;
+        border-radius: 5px;
+        color:black;
+        width:80px;
+    }
+   .comprueba_letra, .inicio{
+    padding: 5px;
+    width: 150px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 10px;
+   }
+
+
+   #dialog{
+    width: 300px;
+    height: 180px;
+    padding: 10px;
+    margin: 20px auto;
+    text-align: center;
+    position: absolute;
+    top: 190px;
+    background-color: #dccce6;
+    font-size: 1.3rem;
+}
+.resultado{
+    padding-bottom: 20px;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+}
+
+.butonera{
+    background-color: antiquewhite;
+    padding: 6px;
+    border-radius: 5px;
+    margin-right: 20px;
+    
+}
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <div class="bienvenidos">
+            <h1>Juego del Ahorcado</h1>
+            <p>¡Bienvenido al juego del ahorcado!</p>
+            <div class="jugador">
+                <label for="nombreJugador"> Tu nombre es:</label>
+                <input name="nombreJugador" id="nombreJugador">
+            </div>
+            <button class="btn_bienvenido">Empieza tu juego</button>
+          
+        </div>
+
+    <div class="juego">
+        <h1>¡Empieza el juego!</h1>
+        <div class="controles">
+            <label for="intro_texto">Introduce la frase o la palabra</label>
+            <input type="text" name="intro_texto" id="intro_texto">
+        </div>
+       
+           <div class="intentosvalidas"> 
+                <label for="intro_intentos">Intentos</label>
+                <input type="number" name="intro_intentos" id="intro_intentos"></div>
+           <div class="butones">
+            <button class="inicio">Jugar</button>
+           </div>
+       <div class="pantalla">
+            <div class="salida">
+                <p class="palabraOculta"></p>
+                <div class="letra">
+                    <label for="letrabuscar">Introduce letra a buscar</label>
+                    <input name="letrabuscar" id="letrabuscar">
+                    <button class="btn_busca">Busca letra</button>
+                </div>
+                <!-- <button class="btn_busca">Busca letra</button> -->
+            </div>
+            <div class="listaerror">
+                <p class="erata"><span class="lista_errores">Las letras erróneas son:</span>
+                    <span class="errores"></span></p>
+                <p class="intentos"></p>
+            </div>
+           
+            <dialog id="dialog">
+                <div class="resultado"></div>
+                <p>Queres jugar otra vez?</p>
+                <button class="butonera newgame">Si</button>
+                <button class="butonera salirJuego">No</button>
+            </dialog>
+        </div>
+    </div>
+</div>   
+     <script>
+        let palabra_oculta;
+        let num_letras = 0;
+        let caja_span='';
+        let value_intento = document.getElementById('intro_intentos');
+        let intro_intentos = 0; 
+        let error = 0 ;
+        let intentos = 0;
+        let counter=0;
+        let string_letras='';
+        let nombre_jugador= document.getElementById('nombreJugador');
+        let nombre='';
+        let letra_b = document.getElementById('letrabuscar');
+        document.getElementById('nombreJugador').value='';
+        document.getElementById('intro_texto').value ='';
+        document.getElementById('intro_intentos').value='';
+        document.getElementById('letrabuscar').value='';
+       
+        document.querySelector('.btn_bienvenido').onclick = function() {
+               nombre = nombre_jugador.value;
+              if (nombre == '' || nombre == ' '){
+                  alert(nombre+' no has escrito datos validos. ');
+                  return; 
+              }else{
+                let nombre_limpio= limpiaTexto(nombre);
+                alert('¡Bienvenido '+  nombre_limpio+ '. Vamos a jugar!');
+              }
+            document.querySelector('.bienvenidos').style.display='none';
+            document.querySelector('.juego').style.display='flex';
+    
+        } 
+
+        document.querySelector('.inicio').onclick = iniciaJuego; 
+
+        function iniciaJuego(){
+        nombre = nombre_jugador.value;
+        intro_intentos=value_intento.value;
+        intentos=intro_intentos;
+        let palabra = document.getElementById('intro_texto').value.toLowerCase();
+        if (palabra =='' || palabra==' '){
+            alert(nombre+ ', no has introducido la palabra ');
+            return;
+        }
+        if(intro_intentos==''||intro_intentos==' ') {
+            alert(nombre+', no has introducido el numero de intentos ');
+            return;
+        }
+        palabra_oculta = montaPalabra();
+         document.querySelector('.btn_busca').onclick = buscaLetra; 
+        document.querySelector('.btn_busca').style.display='block';
+        }
+        function buscaLetra(){
+                nombre = nombre_jugador.value;
+                let letra_buscar = letra_b.value.toLowerCase();
+                if (letra_buscar=='' || letra_buscar==' ' || letra_buscar.length>1 ) {
+                    alert(nombre+', no has introducido un letra o has introducido mas de una letra.');
+                }else{ 
+                    compruebaLetra(letra_buscar);
+                }
+                document.getElementById('letrabuscar').value='';
+                document.getElementById('letrabuscar').focus();
+               
+            } 
+
+        function montaPalabra(){
+        let palabra = document.getElementById('intro_texto').value.toLowerCase();
+        let caja_span ='';
+         for (let i = 0; i < palabra.length; i++) {
+            if  (palabra[i] ==' ')
+            {caja_span += '<span class="letras_reemplaz">.</span>'; }
+            else{
+                caja_span += '<span class="letras_reemplaz">-</span>';
+                num_letras++;
+            } 
+         }   
+         document.querySelector('.palabraOculta').innerHTML = caja_span;
+        document.querySelector('.intentosvalidas').style.display = 'none';
+         document.querySelector('.butones').style.display='none';
+         document.querySelector('.controles').style.display = 'none';
+         document.querySelector('.letra').style.display ='flex';
+         return palabra;
+     }
+
+    function compruebaLetra(letra)
+    {
+        letra= limpiaLetra(letra);
+        if (palabra_oculta.indexOf(letra) != -1 ) {
+            letraAcertada(letra);
+        } else {  
+            letraErronea(letra);         
+        }
+    }
+
+    function letraAcertada(letra){
+    nombre = nombre_jugador.value;
+    let span_l=document.querySelectorAll('.letras_reemplaz');
+    let timeout;
+    if (string_letras.indexOf(letra) == -1){
+            for (let i = 0; i < palabra_oculta.length; i++) { 
+                if (palabra_oculta[i] == letra) {
+                    span_l[i].innerHTML=letra;
+                    counter++;
+                    string_letras+=letra;
+                    console.log(letra);
+                }
+            }
+        } else {
+            alert(nombre + ', has introducido esta letra.');
+        }
+
+        timeout = setTimeout(finwinner,400);
+    }
+
+    function letraErronea(letra){ 
+    error ++; 
+    if (string_letras.indexOf(letra) == -1){      
+        document.querySelector('.intentos').style.display='block';
+        document.querySelector('.lista_errores').style.display='block';
+        if (error == intro_intentos) {
+        finPerdido();
+        }  
+        intentos--;
+        string_letras+=letra;
+        document.querySelector('.intentos').innerHTML = 'Errores: '+ error + '</br>  Total intentos: ' + intro_intentos+' ---  quedan '+ intentos+ ' intentos. ';
+        document.querySelector('.errores').innerHTML += letra +'  ';
+        document.querySelector('.errores').style.textAlign='center';
+    } else  {
+            alert(nombre+ ', has introducido esta letra.');
+        }
+        document.querySelector('.listaerror').style.display='block';
+    }  
+
+    function finPerdido(){
+        nombre = nombre_jugador.value;
+        document.getElementById("dialog").showModal();
+            document.querySelector('.resultado').textContent= nombre+ ' Has perdido '; 
+            document.querySelector('.newgame').onclick = function() {
+                document.getElementById('dialog').close();
+                resetGame();
+                reiniciarJuego();
+            }
+            document.querySelector('.salirJuego').onclick = function() {
+                document.getElementById('dialog').close();
+                alert('¡Adios! '+nombre.toUpperCase());
+                window.close();
+            } 
+            
+    }
+
+    function finwinner(){
+        if(num_letras==counter ){
+            nombre = nombre_jugador.value;
+            document.getElementById("dialog").showModal();
+            document.querySelector('.resultado').textContent= nombre + ' Has ganado'; 
+            document.querySelector('.newgame').onclick = function() {
+            document.getElementById('dialog').close();
+            resetGame();
+            reiniciarJuego();
+            } 
+            document.querySelector('.salirJuego').onclick = function() {
+                document.getElementById('dialog').close();
+                alert(' Adios ' +nombre.toUpperCase()+ '!');
+                window.close();    
+            }       
+        }
+    }
+
+    function resetGame(){
+        document.querySelectorAll('.letras_reemplaz').textContent='';
+        document.querySelector('.controles').style.display = 'block';
+        document.getElementById('intro_texto').value = '';
+        document.querySelector('.intentosvalidas').style.display = 'block';
+        document.querySelector('.intentosvalidas').value='';
+        document.getElementById('intro_intentos').value='';
+        document.querySelector('.butones').style.display='block';
+        document.querySelector('.salida').style.display='none'; 
+        document.querySelector('.intentos').innerHTML= '';
+        document.querySelector('.errores').innerHTML ='';
+        document.querySelector('.lista_errores').style.display='none';
+        error=0;
+        counter=0;
+        string_letras='';
+        let span_l=document.querySelectorAll('.letras_reemplaz');
+        for (const span of span_l) {
+            span.innerHTML='';
+        }     
+    }
+
+    function reiniciarJuego(){
+        
+            document.querySelector('.juego').style.display='block'; 
+            document.querySelector('.listaerror').style.display='none';
+            document.querySelector('.inicio').onclick = function(){
+                iniciaJuego(); 
+                document.querySelector('.salida').style.display='block';  
+               
+
+            }
+        
+            
+
+    }
+
+
+
+    //FUNCIONES AUXILIARES 
+
+
+    function limpiaTexto(texto) {
+            texto = texto.trim();
+            while (texto.indexOf('  ') != -1) { 
+                    texto = texto.replaceAll('  ', ' ');
+            }
+            return texto;
+    }     
+
+    function limpiaLetra(letra) {
+                letra = letra.toLowerCase();
+                let letra_s = '';
+                switch (letra) {
+                        case 'á':
+                        case 'à':
+                            letra_s = 'a';
+                            break;
+                        case 'é':
+                        case 'è':
+                            letra_s = 'e';
+                            break;
+                        case 'í':
+                        case 'ì':
+                            letra_s = 'i';
+                            break;
+                        case 'ó':
+                        case 'ò':
+                            letra_s = 'o';
+                            break;
+                        case 'ú':
+                        case 'ù':
+                        case 'ü':
+                            letra_s = 'u';
+                            break;
+                        default:
+                            letra_s = letra;
+                            break;
+                    }
+                    return letra_s;
+            } 
+       
+    </script> 
+</body>
+</html>
